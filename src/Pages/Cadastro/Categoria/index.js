@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import TemplateBase from '../../../componentes/TemplateBase';
@@ -38,6 +38,18 @@ function CadastroCategoria() {
     );
   }
 
+  useEffect(() => {
+    const URL = 'http://localhost:8080/categorias';
+
+    fetch(URL)
+    .then(async (dadosServidor) => {
+      const resposta = await dadosServidor.json();
+      setCategorias([
+        ...resposta,
+      ]);
+    });
+  }, []);
+
   return (
     <>
       <TemplateBase>
@@ -74,6 +86,11 @@ function CadastroCategoria() {
           <Button>Cadastrar</Button>
         </form>
 
+        {categorias.length === 0 && (
+        <div>
+          Carregando...
+        </div>
+        )}
         <ul>
           {categorias.map((categoria) => (
             <li key={`${categoria.nome}`}>
