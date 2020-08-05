@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import TemplateBase from '../../../componentes/TemplateBase';
 import FormField from '../../../componentes/FormField';
 import Button from '../../../componentes/Button/style';
+import useForm from '../../../hooks/useForm';
 
 function CadastroCategoria() {
   const dadosIniciais = {
@@ -11,8 +12,8 @@ function CadastroCategoria() {
     descricao: '',
     cor: '',
   };
+  const { values, handleInputChange, clearForm } = useForm(dadosIniciais);
   const [categorias, setCategorias] = useState([]);
-  const [values, setValues] = useState(dadosIniciais);
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -20,26 +21,15 @@ function CadastroCategoria() {
       ...categorias,
       values,
     ]);
-    setValues(dadosIniciais);
+    clearForm(dadosIniciais);
   }
 
-  function setValue(chave, valor) {
-    setValues({
-      ...values,
-      [chave]: valor,
-    });
-  }
-
-  function handleInputChange(event) {
-    // const { getAttribute, value } = event.target;
-    setValue(
-      event.target.getAttribute('name'),
-      event.target.value,
-    );
-  }
+  
 
   useEffect(() => {
-    const URL = 'http://localhost:8080/categorias';
+    const URL = window.location.hostname.includes('localhost')
+    ? 'http://localhost:8080/categorias'
+    : 'https://santosflix.herokuapp.com/categorias';
 
     fetch(URL)
     .then(async (dadosServidor) => {
@@ -93,8 +83,8 @@ function CadastroCategoria() {
         )}
         <ul>
           {categorias.map((categoria) => (
-            <li key={`${categoria.nome}`}>
-              {categoria.nome}
+            <li key={`${categoria.titulo}`}>
+              {categoria.titulo}
             </li>
           ))}
         </ul>
